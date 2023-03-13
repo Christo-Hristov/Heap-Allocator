@@ -9,7 +9,7 @@
 
 test_implicit -q samples/example1-nofree.script
 
-test_implicit -q mymallocimplicittest.script
+test_implicit -q heapexhaustion.script
 
 
 
