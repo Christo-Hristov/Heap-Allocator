@@ -127,5 +127,15 @@ bool validate_heap() {
  * information about each block within it.
  */
 void dump_heap() {
-    // TODO(you!): Write this function to help debug your heap.
+    void *temp = segment_start;
+    void *end_heap = (char *)segment_start + segment_size;
+    while (temp < end_heap) {
+        if (is_free(temp)) {
+            printf("%p, %c, %d", temp, 'f', ((header *)temp)->size);
+            temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
+        } else {
+            printf("%p, %c, %d", temp, 'u', (((header *)temp)->size) - 1);
+            temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
+        }
+    }        
 }
