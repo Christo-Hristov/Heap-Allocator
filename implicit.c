@@ -88,6 +88,9 @@ void *mymalloc(size_t requested_size) {
 }
                 
 void myfree(void *ptr) {
+    if (ptr == NULL) {
+        return;
+    }
     void *temp = (char *)ptr - HEADER_SIZE;
     header *headerptr = (header *)temp;
     (headerptr->size)--;
@@ -95,6 +98,7 @@ void myfree(void *ptr) {
 
 void *myrealloc(void *old_ptr, size_t new_size) {
     // TODO(you!): remove the line below and implement this!
+    
     return NULL;
 }
 
