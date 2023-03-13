@@ -5,6 +5,9 @@
 #
 # Below are example custom tests, you can edit this file to change or add new tests.
 
-test_bump samples/pattern-realloc.script
-test_implicit -q samples/pattern-realloc.script
-test_explicit -q samples/pattern-realloc.script
+# Test mymalloc in implicit.c
+
+test_implicit -q samples/example1-nofree.script
+
+
+
