@@ -1,5 +1,6 @@
 #include "./allocator.h"
 #include "./debug_break.h"
+#include <stdio.h>
 
 #define HEADER_SIZE 8
 static void *segment_start;
@@ -131,10 +132,10 @@ void dump_heap() {
     void *end_heap = (char *)segment_start + segment_size;
     while (temp < end_heap) {
         if (is_free(temp)) {
-            printf("%p, %c, %d", temp, 'f', ((header *)temp)->size);
+            printf("%p, %c, %ld", temp, 'f', ((header *)temp)->size);
             temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
         } else {
-            printf("%p, %c, %d", temp, 'u', (((header *)temp)->size) - 1);
+            printf("%p, %c, %ld", temp, 'u', (((header *)temp)->size) - 1);
             temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
         }
     }        
