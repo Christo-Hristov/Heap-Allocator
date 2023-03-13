@@ -87,19 +87,10 @@ void *mymalloc(size_t requested_size) {
     return result;
 }
                 
-                
-                
-                
-                
-                
-                
-                
-            
-        
-
-
 void myfree(void *ptr) {
-    // TODO(you!): implement this!
+    void *temp = (char *)ptr - HEADER_SIZE;
+    header *headerptr = (header *)temp;
+    (headerptr->size)--;
 }
 
 void *myrealloc(void *old_ptr, size_t new_size) {
@@ -132,10 +123,10 @@ void dump_heap() {
     void *end_heap = (char *)segment_start + segment_size;
     while (temp < end_heap) {
         if (is_free(temp)) {
-            printf("%p, %c, %ld", temp, 'f', ((header *)temp)->size);
+            printf("%p, %c, %ld\n", temp, 'f', ((header *)temp)->size);
             temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
         } else {
-            printf("%p, %c, %ld", temp, 'u', (((header *)temp)->size) - 1);
+            printf("%p, %c, %ld\n", temp, 'u', (((header *)temp)->size) - 1);
             temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
         }
     }        
