@@ -158,10 +158,10 @@ void dump_heap() {
     void *end_heap = (char *)segment_start + segment_size;
     while (temp < end_heap) {
         if (is_free(temp)) {
-            printf("%p, %c, %xld\n", temp, 'f', ((header *)temp)->size);
+            printf("%p, %c, %zx\n", temp, 'f', ((header *)temp)->size);
             temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
         } else {
-            printf("%p, %c, %xld\n", temp, 'u', (((header *)temp)->size) - 1);
+            printf("%p, %c, %zx\n", temp, 'u', (((header *)temp)->size) - 1);
             temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
         }
     }        
