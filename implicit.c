@@ -98,6 +98,13 @@ void myfree(void *ptr) {
 }
 
 void *myrealloc(void *old_ptr, size_t new_size) {
+    if (old_ptr == NULL) {
+        return mymalloc(new_size);
+    }
+    if (new_size == 0) {
+        myfree(old_ptr);
+        return NULL;
+    }
     void *result = NULL;
     size_t needed = roundup(new_size, ALIGNMENT);
     void *temp = segment_start;

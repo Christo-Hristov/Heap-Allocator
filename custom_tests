@@ -9,7 +9,35 @@
 
 test_implicit -q samples/example1-nofree.script
 
-test_implicit -q heapexhaustion.script
+# Test implicit malloc and free
 
+test_implicit samples/example2-recycle.script
 
+# Test implicit realloc
+
+test_implicit samples/example3-inplace.scripe
+
+# More comprehensive test of implicit allocator.
+
+test_implicit samples/pattern-mixed.script
+
+test_implicit samples/pattern-realloc.script
+
+test_implicit samples/pattern-recycle.script
+
+test_implicit samples/pattern-repeat.script
+
+test_implicit samples/pattern-updown.script
+
+# Most comprehensive test of implicit allocator.
+
+test_implicit samples/robust.script
+
+test_implicit samples/trace-chs.script
+
+test_implicit samples/trace-eamcs.script
+
+test_implicit samples/trace-firefox.script
+
+test_implicit samples/trace-gcc.script
 
