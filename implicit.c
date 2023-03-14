@@ -98,7 +98,6 @@ void myfree(void *ptr) {
 }
 
 void *myrealloc(void *old_ptr, size_t new_size) {
-    // TODO(you!): remove the line below and implement this!
     void *result = NULL;
     size_t needed = roundup(new_size, ALIGNMENT);
     void *temp = segment_start;
@@ -159,10 +158,10 @@ void dump_heap() {
     void *end_heap = (char *)segment_start + segment_size;
     while (temp < end_heap) {
         if (is_free(temp)) {
-            printf("%p, %c, %ld\n", temp, 'f', ((header *)temp)->size);
+            printf("%p, %c, %xld\n", temp, 'f', ((header *)temp)->size);
             temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
         } else {
-            printf("%p, %c, %ld\n", temp, 'u', (((header *)temp)->size) - 1);
+            printf("%p, %c, %xld\n", temp, 'u', (((header *)temp)->size) - 1);
             temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
         }
     }        
