@@ -15,7 +15,7 @@ test_implicit samples/example2-recycle.script
 
 # Test implicit realloc
 
-test_implicit samples/example3-inplace.scripe
+test_implicit samples/example3-inplace.script
 
 # More comprehensive test of implicit allocator.
 
@@ -35,7 +35,7 @@ test_implicit samples/robust.script
 
 test_implicit samples/trace-chs.script
 
-test_implicit samples/trace-eamcs.script
+test_implicit samples/trace-emacs.script
 
 test_implicit samples/trace-firefox.script
 
