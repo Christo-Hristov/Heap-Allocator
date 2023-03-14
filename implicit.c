@@ -1,3 +1,9 @@
+/* CS 107
+Code written by: Christo Hristov
+
+This file contains a series of utility functions implemented to allocate, free, and reallocate memory from a heap.  These functions are used in the test_implicit.c file.
+*/
+
 #include "./allocator.h"
 #include "./debug_break.h"
 #include <stdio.h>
