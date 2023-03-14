@@ -244,7 +244,7 @@ bool validate_heap() {
 
 /* Function: dump_heap
  * -------------------
- * This function prints out the the block contents of the heap.  It is not
+ * This function prints out the the block contents of the heap.  Specifically, it prints the pointer to header, if header is free or used, the decimal amount of bytes allocated by the header, and hex distance to next header  It is not
  * called anywhere, but is a useful helper function to call from gdb when
  * tracing through programs.  It prints out the total range of the heap, and
  * information about each block within it.
@@ -254,12 +254,12 @@ void dump_heap() {
     void *end_heap = (char *)segment_start + segment_size;
     // while there are headers left in the heap
     while (temp < end_heap) {
-        // print the pointer to header, if header is free or used, the decimal amount of bytes allocated by the header, and hex distance to next header
         if (is_free(temp)) {
             printf("%p, %c, %ld, %zx\n", temp, 'f', ((header *)temp)->size, ((header *)temp)->size + HEADER_SIZE);
             temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
         } else {
-            printf("%p, %c, %ld, %zx\n", temp, 'u', (((header *)temp)->size) - 1, ((header *)temp)->size - 1 + HEADER_SIZE);
+            size_t block_len = (((header *)temp)->size) - 1;
+            printf("%p, %c, %ld, %zx\n", temp, 'u', block_len, block_len + HEADER_SIZE);
             temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
         }
     }        
