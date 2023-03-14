@@ -1,6 +1,7 @@
 #include "./allocator.h"
 #include "./debug_break.h"
 #include <stdio.h>
+#include <string.h>
 
 #define HEADER_SIZE 8
 static void *segment_start;
@@ -98,8 +99,39 @@ void myfree(void *ptr) {
 
 void *myrealloc(void *old_ptr, size_t new_size) {
     // TODO(you!): remove the line below and implement this!
-    
-    return NULL;
+    void *result = NULL;
+    size_t needed = roundup(new_size, ALIGNMENT);
+    void *temp = segment_start;
+    void *end_heap =  (char *)segment_start + segment_size;
+    while (temp < end_heap) {
+        if (is_free(temp)) {
+            if (needed <= ((header *)temp)->size) {
+                long space = ((header *)temp)->size - (needed + HEADER_SIZE);
+                result = (char *)temp + HEADER_SIZE;
+                void *old_header = (char *)old_ptr - 8;
+                size_t old_size = ((header *)old_header)->size;
+                memmove(result, old_ptr, old_size);
+                (((header *)old_header)->size)--;
+                if (space == 0) {
+                    make_used(temp, needed + HEADER_SIZE);
+                    return result;
+                } else if (space >= 0) {
+                    make_used(temp, needed);
+                    temp = (char *)temp + HEADER_SIZE + needed;
+                    make_free(temp, space);
+                    return result;
+                } else {
+                    make_used(temp, needed);
+                    return result;
+                }
+            } else {
+                temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
+            }
+        } else {
+            temp = (char *)temp + HEADER_SIZE + (((header *)temp)->size - 1);
+        }
+    }
+    return result;
 }
 
 bool validate_heap() {
