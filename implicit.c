@@ -109,7 +109,13 @@ void *myrealloc(void *old_ptr, size_t new_size) {
                 result = (char *)temp + HEADER_SIZE;
                 void *old_header = (char *)old_ptr - 8;
                 size_t old_size = ((header *)old_header)->size;
-                memmove(result, old_ptr, old_size);
+                size_t copy_size = 0;
+                if (old_size >= new_size) {
+                    copy_size = new_size;
+                } else {
+                    copy_size = old_size;
+                }
+                memmove(result, old_ptr, copy_size);
                 (((header *)old_header)->size)--;
                 if (space == 0) {
                     make_used(temp, needed + HEADER_SIZE);
