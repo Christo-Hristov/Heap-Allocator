@@ -155,8 +155,22 @@ bool validate_heap() {
      * You can also use the breakpoint() function to stop
      * in the debugger - e.g. if (something_is_wrong) breakpoint();
      */
-    
-    return true;
+    void *temp = segment_start;
+    size_t count = 0;
+    void *end_heap = (char *)segment_start + segment_size;
+    while (temp < end_heap) {
+        header *cur_header = (header *)temp;
+        size_t block_size = 0;
+        if (is_free(temp)) {
+            block_size = cur_header->size + HEADER_SIZE;
+            count += block_size;
+        } else {
+            block_size = cur_header->size - 1 + HEADER_SIZE;
+            count += block_size;
+        }
+        temp = (char *)temp + block_size;
+    }
+    return (count == segment_size);
 }
 
 /* Function: dump_heap
