@@ -3,11 +3,10 @@ Code written by: Christo Hristov
 
 This file contains a series of utility functions implemented to allocate, free, and reallocate memory from a heap.  These functions are used in the test_implicit.c file.
 */
-
-#include "./allocator.h"
-#include "./debug_break.h"
 #include <stdio.h>
 #include <string.h>
+#include "./allocator.h"
+#include "./debug_break.h"
 
 #define HEADER_SIZE 8  // define a constant to hold the number of bytes in a header
 static void *segment_start;
@@ -255,7 +254,7 @@ void dump_heap() {
     void *end_heap = (char *)segment_start + segment_size;
     // while there are headers left in the heap
     while (temp < end_heap) {
-        // for each header, we print the pointer to the header, whether the header is free or used, the decimal amount of bytes allocated by the header, and then the hex distance to the next header
+        // print the pointer to header, if header is free or used, the decimal amount of bytes allocated by the header, and hex distance to next header
         if (is_free(temp)) {
             printf("%p, %c, %ld, %zx\n", temp, 'f', ((header *)temp)->size, ((header *)temp)->size + HEADER_SIZE);
             temp = (char *)temp + HEADER_SIZE + ((header *)temp)->size;
