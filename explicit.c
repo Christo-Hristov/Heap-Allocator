@@ -127,7 +127,7 @@ void myfree(void *ptr) {
             return;
         } else {
             header *cur_header = (header *)ptr;
-            size_t jump_space = cur_header->size + BLOCK_SIZE;
+            size_t jump_space = cur_header->size + BLOCK_SIZE - 1;
             ptr = (char *)ptr + jump_space;
         }
     }
