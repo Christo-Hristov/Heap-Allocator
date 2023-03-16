@@ -143,8 +143,8 @@ void myfree(void *ptr) {
             node *next_block = (node *)((char *)ptr + BLOCK_SIZE);
             void *prev_block = next_block->prev;
             make_free(free_location, used_size, next_block, prev_block);
-            return;
             coalesce(free_location);
+            return;
         } else {
             header *cur_header = (header *)ptr;
             size_t jump_space = cur_header->size + BLOCK_SIZE - 1;
