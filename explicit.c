@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "./allocator.h"
 #include "./debug_break.h"
 
