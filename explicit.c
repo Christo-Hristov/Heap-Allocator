@@ -29,7 +29,7 @@ bool is_free(void *headerptr) {
         return false;
     }
 }
-
+    
 void make_free(void *location, size_t space, void *next_block, void *prev_block) {
     header *new_header = (header *)location;
     new_header->size = space;
@@ -46,9 +46,27 @@ void make_free(void *location, size_t space, void *next_block, void *prev_block)
         node *next_node = (node *)next_block;
         next_node->prev = new_node;
     }
-    //coalesce
 }
 
+void coalesce(void *location) {
+    void *end_heap = (char *)segment_start + segment_size;
+    header *cur_header = (header *)location;
+    size_t cur_space = cur_header->size;
+    size_t count = cur_space;
+    node *cur_node = (node *)((char *)location + BLOCK_SIZE);
+    void *prev_block = cur_node->prev;
+    void *next_block = cur_node->next;
+    void *temp = (char *)location + count + BLOCK_SIZE;
+    while ((temp < end_heap) && is_free(temp)) {
+        size_t new_space = ((header *)temp)->size + BLOCK_SIZE;
+        count += new_space;
+        node *new_node = (node *)((char *)temp + BLOCK_SIZE);
+        next_block = new_node->next;
+        temp = (char *)temp + new_space;
+    }
+    make_free(location, count, next_block, prev_block);
+}
+  
 void remove_free(node *cur) {
     node *next_block = (node *)(cur->next);
     node *prev_block = (node *)(cur->prev);
