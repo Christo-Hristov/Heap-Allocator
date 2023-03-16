@@ -118,7 +118,7 @@ void myfree(void *ptr) {
     void *end_heap = (char *)segment_start + segment_size;
     ptr = (char *)ptr - BLOCK_SIZE;
     void *free_location = ptr;
-    size_t used_size = ((header *)free_location)->size;
+    size_t used_size = (((header *)free_location)->size) - 1;
     while (ptr < end_heap) {
         if (is_free(ptr)) {
             node *next_block = (node *)((char *)ptr + BLOCK_SIZE);
