@@ -55,7 +55,11 @@ void remove_free(node *cur) {
     if (prev_block != NULL) {
         prev_block->next = next_block;
     } else {
-        first_free = (char *)next_block - BLOCK_SIZE;
+        if (next_block == NULL) {
+            first_free = (char *)segment_start + segment_size;
+        } else {
+            first_free = (char *)next_block - BLOCK_SIZE;
+        }
     }
     if (next_block != NULL) {
         next_block->prev = prev_block;
@@ -111,9 +115,33 @@ void *mymalloc(size_t requested_size) {
 }
 
 void myfree(void *ptr) {
-    // TODO(you!): implement this!
+    void *end_heap = (char *)segment_start + segment_size;
+    ptr = (char *)ptr - BLOCK_SIZE;
+    void *free_location = ptr;
+    size_t used_size = ((header *)free_location)->size;
+    while (ptr < end_heap) {
+        if (is_free(ptr)) {
+            node *next_block = (node *)((char *)ptr + BLOCK_SIZE);
+            void *prev_block = next_block->prev;
+            make_free(free_location, used_size, next_block, prev_block);
+            return;
+        } else {
+            header *cur_header = (header *)ptr;
+            size_t jump_space = cur_header->size + BLOCK_SIZE;
+            ptr = (char *)ptr + jump_space;
+        }
+    }
+    if (first_free == end_heap) {
+        make_free(free_location, used_size, NULL, NULL);
+    } else {   
+        node *temp = (node *)((char *)(first_free) + BLOCK_SIZE);
+        while (temp->next != NULL) {
+            temp = (node *)(temp->next);
+        }
+        make_free(free_location, used_size, temp->next, temp);
+    }
 }
-
+    
 void *myrealloc(void *old_ptr, size_t new_size) {
     // TODO(you!): remove the line below and implement this!
     return NULL;
@@ -144,7 +172,7 @@ void dump_heap() {
     printf("%s: %p\n", "pointer to first free header", first_free);
     while (temp < end_heap) {
         if (is_free(temp)) {
-            printf("%p, %c, %ld, %zx ", temp, 'f', ((header *)temp)->size, ((header *)temp)->size + BLOCK_SIZE);
+            printf("%p, %c, %ld, %zx, ", temp, 'f', ((header *)temp)->size, ((header *)temp)->size + BLOCK_SIZE);
             node *cur_node = (node *)((char *)temp + BLOCK_SIZE);
             printf("%p, %p, %p", cur_node, cur_node->next, cur_node->prev);
             temp = (char *)temp + BLOCK_SIZE + ((header *)temp)->size;
