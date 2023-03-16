@@ -174,7 +174,7 @@ void dump_heap() {
         if (is_free(temp)) {
             printf("%p, %c, %ld, %zx, ", temp, 'f', ((header *)temp)->size, ((header *)temp)->size + BLOCK_SIZE);
             node *cur_node = (node *)((char *)temp + BLOCK_SIZE);
-            printf("%p, %p, %p", cur_node, cur_node->next, cur_node->prev);
+            printf("%p, %p, %p\n", cur_node, cur_node->next, cur_node->prev);
             temp = (char *)temp + BLOCK_SIZE + ((header *)temp)->size;
         } else {
             size_t block_len = (((header *)temp)->size) - 1;
