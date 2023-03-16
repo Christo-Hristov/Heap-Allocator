@@ -20,6 +20,15 @@ size_t roundup(size_t sz, size_t mult) {
     return (sz + mult - 1) & ~(mult - 1);
 }
 
+bool is_free(void *headerptr) {
+    header *header_ptr = (header *)headerptr;
+    if ((header_ptr->size & 1) == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void make_free(void *location, size_t space, void *next_block, void *prev_block) {
     header *new_header = (header *)location;
     new_header->size = space;
@@ -29,16 +38,12 @@ void make_free(void *location, size_t space, void *next_block, void *prev_block)
     if (prev_block != NULL) {
         node *past_node = (node *)prev_block;
         past_node->next = new_node;
-        //node past_node = *prev_block;
-        //past_node.next = new_node;
     } else {
         first_free = location;
     }
     if (next_block != NULL) {
         node *next_node = (node *)next_block;
         next_node->prev = new_node;
-        //node next_node = *next_block;
-        //next_node.prev = new_node;
     }
     //coalesce
 }
@@ -133,5 +138,19 @@ bool validate_heap() {
  * information about each block within it.
  */
 void dump_heap() {
-    // TODO(you!): Write this function to help debug your heap.
+    void *temp = segment_start;
+    void *end_heap = (char *)segment_start + segment_size;
+    printf("%s: %p\n", "pointer to first free header", first_free);
+    while (temp < end_heap) {
+        if (is_free(temp)) {
+            printf("%p, %c, %ld, %zx ", temp, 'f', ((header *)temp)->size, ((header *)temp)->size + BLOCK_SIZE);
+            node *cur_node = (node *)((char *)temp + BLOCK_SIZE);
+            printf("%p, %p, %p", cur_node, cur_node->next, cur_node->prev);
+            temp = (char *)temp + BLOCK_SIZE + ((header *)temp)->size;
+        } else {
+            size_t block_len = (((header *)temp)->size) - 1;
+            printf("%p, %c, %ld, %zx\n", temp, 'u', block_len, block_len + BLOCK_SIZE);
+            temp = (char *)temp + BLOCK_SIZE + block_len;
+        }
+    }
 }
