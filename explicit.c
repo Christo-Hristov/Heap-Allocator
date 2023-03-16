@@ -119,6 +119,7 @@ void *mymalloc(size_t requested_size) {
                 void *prev_block = temp->prev;
                 make_used((char *)temp - BLOCK_SIZE, needed);
                 make_free((char *)temp + needed, (free_space - needed - BLOCK_SIZE), next_block, prev_block);
+                coalesce((char *)temp + needed);
                 return result;
             } else {
                 remove_free(temp);
@@ -143,6 +144,7 @@ void myfree(void *ptr) {
             void *prev_block = next_block->prev;
             make_free(free_location, used_size, next_block, prev_block);
             return;
+            coalesce(free_location);
         } else {
             header *cur_header = (header *)ptr;
             size_t jump_space = cur_header->size + BLOCK_SIZE - 1;
