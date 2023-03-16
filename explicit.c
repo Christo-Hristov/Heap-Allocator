@@ -105,6 +105,9 @@ bool myinit(void *heap_start, size_t heap_size) {
 }
 
 void *mymalloc(size_t requested_size) {
+    if (requested_size == 0) {
+        return NULL;
+    }
     void *result = NULL;
     size_t needed = roundup(requested_size, ALIGNMENT);
     node *temp = (node *)((char *)first_free + BLOCK_SIZE);
@@ -134,6 +137,9 @@ void *mymalloc(size_t requested_size) {
 }
 
 void myfree(void *ptr) {
+    if (ptr == NULL) {
+        return;
+    }
     void *end_heap = (char *)segment_start + segment_size;
     ptr = (char *)ptr - BLOCK_SIZE;
     void *free_location = ptr;
