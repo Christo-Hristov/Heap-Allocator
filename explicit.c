@@ -245,15 +245,31 @@ void *myrealloc(void *old_ptr, size_t new_size) {
                 
 
 bool validate_heap() {
-    /* TODO(you!): remove the line below and implement this to
-     * check your internal structures!
-     * Return true if all is ok, or false otherwise.
-     * This function is called periodically by the test
-     * harness to check the state of the heap allocator.
-     * You can also use the breakpoint() function to stop
-     * in the debugger - e.g. if (something_is_wrong) breakpoint();
-     */
-    return true;
+    void *temp = segment_start;
+    size_t count = 0;
+    void *end_heap = (char *)segment_start + segment_size;
+    node *cur_node = (node *)((char *)first_free + BLOCK_SIZE);
+    while (temp < end_heap) {
+        header *cur_header = (header *)temp;
+        size_t block_size = 0;
+        if (is_free(temp)) {
+            block_size = cur_header->size + BLOCK_SIZE;
+            count += block_size;
+            if (temp != ((char *)cur_node - BLOCK_SIZE)) {
+                return false;
+            } else {
+                cur_node = (node *)(cur_node->next);
+            }
+        } else {
+            block_size = cur_header->size - 1 + BLOCK_SIZE;
+            count += block_size;
+        }
+        temp = (char *)temp + block_size;
+    }
+    if (cur_node != NULL) {
+        return false;
+    }
+    return (count == segment_size);
 }
 
 /* Function: dump_heap
