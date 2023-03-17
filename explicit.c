@@ -179,7 +179,7 @@ void *myrealloc(void *old_ptr, size_t new_size) {
     }
     size_t needed = roundup(new_size, ALIGNMENT);
     header *old_header = (header *)((char *)old_ptr - BLOCK_SIZE);
-    size_t free_space = old_header->size;
+    size_t free_space = old_header->size - 1;
     void *temp = (char *)old_ptr + free_space;
     void *result = NULL;
     if (is_free(temp)) {
