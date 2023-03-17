@@ -4,6 +4,7 @@
 #include "./debug_break.h"
 
 #define BLOCK_SIZE 8
+#define MIN_BLOCK 24
 
 static void *segment_start;
 static size_t segment_size;
@@ -110,6 +111,9 @@ void *mymalloc(size_t requested_size) {
         return NULL;
     }
     void *result = NULL;
+    if (requested_size < MIN_BLOCK) {
+        requested_size = MIN_BLOCK;
+    }
     size_t needed = roundup(requested_size, ALIGNMENT);
     node *temp = (node *)((char *)first_free + BLOCK_SIZE);
     while (temp != NULL) {
@@ -176,6 +180,9 @@ void *myrealloc(void *old_ptr, size_t new_size) {
     if (new_size == 0) {
         myfree(old_ptr);
         return NULL;
+    }
+    if (new_size < MIN_BLOCK) {
+        new_size = MIN_BLOCK;
     }
     size_t needed = roundup(new_size, ALIGNMENT);
     header *old_header = (header *)((char *)old_ptr - BLOCK_SIZE);
