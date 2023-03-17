@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "./allocator.h"
 #include "./debug_break.h"
 
@@ -169,9 +170,72 @@ void myfree(void *ptr) {
 }
     
 void *myrealloc(void *old_ptr, size_t new_size) {
-    // TODO(you!): remove the line below and implement this!
-    return NULL;
+    if (old_ptr == NULL) {
+        return mymalloc(new_size);
+    }
+    if (new_size == 0) {
+        myfree(old_ptr);
+        return NULL;
+    }
+    size_t needed = roundup(new_size, ALIGNMENT);
+    header *old_header = (header *)((char *)old_ptr - BLOCK_SIZE);
+    size_t free_space = old_header->size;
+    void *temp = (char *)old_ptr + free_space;
+    void *result = NULL;
+    if (is_free(temp)) {
+        coalesce(temp);
+        header *free_header = (header *)temp;
+        free_space += BLOCK_SIZE + free_header->size;
+        if (needed <= free_space) {
+            long leftover_space = free_space - (needed + 2 * BLOCK_SIZE);
+            result = old_ptr;
+            node *free_node = (node *)((char *)temp + BLOCK_SIZE);
+            if (leftover_space > 0) {
+                void *next_block = free_node->next;
+                void *prev_block = free_node->prev;
+                make_used((char *)old_ptr - BLOCK_SIZE, needed);
+                make_free((char *)old_ptr + needed, free_space - needed - BLOCK_SIZE, next_block, prev_block);
+                return result;
+            } else {
+                remove_free(free_node);
+                make_used(old_header, free_space);
+                return result;
+            }
+        } else {
+            result = mymalloc(needed);
+            if (result == NULL) {
+                return old_ptr;
+            } else {
+                memmove(result, old_ptr, old_header->size);
+                myfree(old_ptr);
+                coalesce((char *)old_ptr - BLOCK_SIZE);
+                return result;
+            }
+        }
+    } else {
+        if (needed <= free_space) {
+            long leftover_space = free_space - (needed + 2 * BLOCK_SIZE);
+            if (leftover_space > 0) {
+                make_used((char *)old_ptr - BLOCK_SIZE, needed);
+                make_used((char *)old_ptr + needed, free_space - needed - BLOCK_SIZE);
+                myfree((char *)old_ptr + needed + BLOCK_SIZE);
+                return old_ptr;
+            } else {
+                return old_ptr;
+            }
+        } else {
+            result = mymalloc(needed);
+            if (result == NULL) {
+                return old_ptr;
+            } else {
+                memmove(result, old_ptr, old_header->size);
+                myfree(old_ptr);
+                return result;
+            }
+        }
+    }
 }
+                
 
 bool validate_heap() {
     /* TODO(you!): remove the line below and implement this to
