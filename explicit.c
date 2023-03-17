@@ -93,7 +93,8 @@ void coalesce(void *location) {
     size_t cur_space = cur_header->size;
     size_t count = cur_space;  // create a variable count to keep track of total free space
     node *cur_node = (node *)((char *)location + BLOCK_SIZE);
-    //  after we coalesce, the previous of the new block will equal the previous of the first coalesced block, and the next of the new block will equal the next of the last coalesced block
+    //  after we coalesce, the previous of the new block will equal the previous of the first coalesced block,
+    // and the next of the new block will equal the next of the last coalesced block
     void *prev_block = cur_node->prev;  // store previous of first coalesced block
     void *next_block = cur_node->next;  // store next of first coalesced block in case no blocks to be coalesced
     void *temp = (char *)location + count + BLOCK_SIZE;  // create a pointer to traverse heap
