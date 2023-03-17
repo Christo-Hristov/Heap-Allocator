@@ -31,9 +31,9 @@ test_explicit samples/example4-coalesce.script
 
 # More comprehensive test of implicit allocator vs explicit allocator.
 
-test_implicit pattern-coalesce.script
+test_implicit samples/pattern-coalesce.script
 
-test_explicit pattern-coalesce.script
+test_explicit samples/pattern-coalesce.script
 
 test_implicit samples/pattern-mixed.script
 
